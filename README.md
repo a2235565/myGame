@@ -1,6 +1,9 @@
 # myGame 文字挂机小游戏
 ## 安装
 - 根目录下 composer  install
+## 测试地址
+[测试连接](http://iotdemo.zztdw.cn:9501/page/index.html)
+账号123 密码123
 ## 生成器
 - unit.php 单元测试
 - unitBirthPlace.php 出生地地点生成器

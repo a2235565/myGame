@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<style>
+    body{
+        width: 100%;
+        height: 100vh;
+        padding:0px;
+        margin: 0px auto;
+        background: url('/res/img/loginBg.jpg') no-repeat 0px 0px;
+        font-family: 'Open Sans', sans-serif;
+        max-width: 600px;
+    }
+    .bg {
+        background: #dfe7f3;
+        display: block;
+        float: left;
+        width: 100%;
+        height: 48vh;
+
+    }
+    .san15{
+        float: left;
+        height: 18px;
+        padding: 3px 15px 5px 15px;
+        border: 1px solid;
+        text-align: center;
+        cursor:pointer;
+        margin-left: 3px;
+    }
+</style>
+<body>
+<div id="place" class="bg">
+    <p> 地点</p>
+</div>
+<div id="monsterList" style="margin-top: 1%" class="bg">
+    <p> 怪物</p>
+</div>
+</body>
+<script src="/res/js/common.js"></script>
+<script src="/res/js/wsHelp.js"></script>
+<script src="/res/js/jquery.min.js"></script>
+<script>
+
+    var app = parent.appHelp;
+    var webSc = parent.webSc;
+    var mapInfo = {};
+    webSc.sendJson({action:'getPlace'});
+    app.allCallback = function (data) {
+        if(data.action=='getPlace'){
+            let place = $("#place");
+            $.each(data,function (k,v) {
+                if(k!='action'){
+                    mapInfo[v.name]=v;
+                    place.append('<span class="san15">'+v.name+'</span>');
+                }
+            })
+        }
+
+        if(data.action=='playBoss'){
+            showTip('<span id="list"></span>');
+            gongji(data);
+        }
+        if(data.action=='mInfo'){
+            showTip(formatJson(data),'<p style="color: red;text-align: center" onclick="if(confirm(\'是否攻击\'))webSc.sendJson({action:\'playBoss\',m:\''+data.name+'\'})"> 攻击</p>');
+        }
+    };
+
+
+
+
+    $(document).on('click','#place .san15',function () {
+        let _this = $(this);
+        showTip(formatJson(mapInfo[_this.html()]),'<p style="color: red;text-align: center" onclick="inPlace(\''+_this.html()+'\')"> 进入</p>');
+    });
+
+    $(document).on('click','#monsterList .san15',function () {
+        let _this = $(this);
+        // webSc.sendJson({action:'playBoss',m:_this.html()});
+        webSc.sendJson({action:'mInfo',m:_this.html()});
+    });
+
+    function inPlace(str) {
+        if(confirm("是否选择该地点")){
+            let monsterList = $("#monsterList");
+            monsterList.find('.san15').remove();
+            $.each(mapInfo[str].monsterList,function (k,v) {
+                monsterList.append('<span class="san15">'+v+'</span>');
+            });
+            $("#msg").remove();
+        }
+    }
+
+</script>
+</html>

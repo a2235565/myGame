@@ -1,0 +1,43 @@
+{
+  "name": "\u5de6\u94a9\u62f3",
+  "effect": {
+    "dps": [{
+      "odds": 100,
+      "let": "self",
+      "do": 1
+    }],
+    "hit": [{
+      "odds": 100,
+      "let": "self",
+      "do": 1
+    }],
+    "dodge": [{
+      "odds": 100,
+      "let": "self",
+      "do": 1
+    }],
+    "armor": [{
+      "odds": 100,
+      "let": "self",
+      "do": 1
+    }],
+    "first":[{
+      "odds": 100,
+      "let": "self",
+      "do": 1
+    }] ,
+    "bank": [{
+      "odds": 100,
+      "let": "other",
+      "do": 0
+    }]
+  },
+  "trigger": 100,
+  "satisfy": {
+    "l": 1,
+    "m": 1,
+    "t": 1,
+    "needSkill": []
+  },
+  "level": 1
+}

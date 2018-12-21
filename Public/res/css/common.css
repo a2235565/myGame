@@ -1,0 +1,15 @@
+body{
+    background: url('/res/img/loginBg.jpg') no-repeat 0px 0px;
+    font-family: 'Open Sans', sans-serif;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    /*min-height: 1050px;*/
+    min-height: 100vh;
+}
+
+* {
+    margin: 0px auto;
+    padding: 0px;
+}

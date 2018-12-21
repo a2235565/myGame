@@ -1,0 +1,72 @@
+<html><head>
+    <title>挂机</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords"
+          content="挂机,挂机游戏,挂机受虐">
+    <link href="/res/css/loginPage.css" rel="stylesheet" type="text/css">
+    <style>
+        body{
+            max-width: 1200px;
+            margin: 0px auto;
+            padding: 0px;
+        }
+    </style>
+    <script src="/res/js/jquery.min.js"></script>
+</head>
+<body>
+<script>
+    $(document).ready(function() {
+    $('.close').on('click', function(){
+        $('.login-form').fadeOut('slow', function(c){
+            $('.login-form').remove();
+            var userAgent = navigator.userAgent;
+            if (userAgent.indexOf("Firefox") != -1 || userAgent.indexOf("Chrome") !=-1) {
+                window.location.href="about:blank";
+            }else if(userAgent.indexOf('Android') > -1 || userAgent.indexOf('Linux') > -1){
+                window.opener=null;window.open('about:blank','_self','').close();
+            }else {
+                window.pener = null;
+                window.open("about:blank", "_self");
+                window.close();
+            }
+        });
+    });
+    $(".signin").on('click',function(){
+        $.post('/userLogin',{pass:$('#pass').val(),user:$('#user').val()},function (data) {
+             if(data.result){
+                 location = '/page/index.html'
+             }else{
+                 alert(data.msg);
+             }
+        })
+    });
+});
+</script>
+<div class="login-form">
+    <div class="close"> </div>
+    <div class="head-info">
+        <label class="lbl-1"> </label>
+        <label class="lbl-2"> </label>
+        <label class="lbl-3"> </label>
+    </div>
+    <div class="clear"> </div>
+    <div class="avtar" >
+        <img  style=" border-radius: 50%; width: 150px;"src="/res/img/avtar.gif">
+    </div>
+    <form>
+        <input type="text" id="user" class="text" value="123" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Username';}">
+        <div class="key">
+            <input type="password" id="pass" value="123" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Password';}">
+        </div>
+    </form>
+    <div class="signin">
+        <input style="    font-family: cursive;" type="submit" value="登入">
+    </div>
+</div>
+<div class="copy-rights">
+    <p>Copyright © 8102.</p>
+</div>
+
+
+</body></html>

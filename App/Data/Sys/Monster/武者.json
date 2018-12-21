@@ -1,0 +1,51 @@
+{
+  "location": "\u75af\u72d7\u62f3",
+  "drop": "\u91d1\u94b1\uff0c\u7ecf\u9a8c\uff0c\u75af\u72d7\u62f3",
+  "dropRule": {
+    "rule": [
+      {
+        "odds": "100",
+        "thing": {
+          "exp": 10
+        }
+      },
+      {
+        "odds": "50",
+        "thing": {
+          "money": 5
+        }
+      },
+      {
+        "odds": "10",
+        "thing": {
+          "skill": "mad_dog_boxing"
+        }
+      }
+    ],
+    "luckRule": 0.3
+  },
+  "lifeValue": "166",
+  "bank": 100,
+  "name": "\u6b66\u8005",
+  "level": 1,
+  "skill": [
+    "\u75af\u72d7\u62f3",
+    "\u5de6\u94a9\u62f3"
+  ],
+  "skillBuff": [],
+  "skillField": [],
+  "mood": 8,
+  "injury": 0,
+  "dps": "50",
+  "hit": "100",
+  "dodge": 60,
+  "armor": "50",
+  "first": null,
+  "t": 30,
+  "m": 30,
+  "l": 30,
+  "z": 30,
+  "quality": [],
+  "thing": [],
+  "note": null
+}

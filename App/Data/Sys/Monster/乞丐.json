@@ -1,0 +1,50 @@
+{
+  "location": "沧海",
+  "drop": "\u91d1\u94b1\uff0c\u7ecf\u9a8c\uff0c\u75af\u72d7\u62f3",
+  "dropRule": {
+    "rule": [
+      {
+        "odds": "100",
+        "thing": {
+          "exp": 10
+        }
+      },
+      {
+        "odds": "50",
+        "thing": {
+          "money": 5
+        }
+      },
+      {
+        "odds": "10",
+        "thing": {
+          "skill": "\u75af\u72d7\u62f3"
+        }
+      }
+    ],
+    "luckRule": 0.3
+  },
+  "lifeValue": "155",
+  "bank": 100,
+  "name": "\u4e5e\u4e10",
+  "level": 1,
+  "skill": [
+    "\u5de6\u94a9\u62f3"
+  ],
+  "skillBuff": [],
+  "skillField": [],
+  "mood": 10,
+  "injury": 0,
+  "dps": "55",
+  "hit": "50",
+  "dodge": "33",
+  "armor": "33",
+  "first": null,
+  "t": 20,
+  "m": 20,
+  "l": 20,
+  "z": 20,
+  "quality": [],
+  "thing": [],
+  "note": null
+}

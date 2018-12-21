@@ -1,0 +1,48 @@
+{
+  "adventureList": [
+    "\u6076\u4e5e\u4e10\u5077\u94b1",
+    "\u67aa\u7248\u5982\u6765\u795e\u638c",
+    "\u76d7\u7248\u6613\u7b4b\u7ecf"
+  ],
+  "adventureRule": [
+    {
+      "odds": 1,
+      "let": "thing",
+      "do": "\u76d7\u7248\u6613\u7b4b\u7ecf"
+    },
+    {
+      "odds": 3,
+      "let": "thing",
+      "do": "\u67aa\u7248\u5982\u6765\u795e\u638c"
+    },
+    {
+      "odds": 25,
+      "let": "money",
+      "do": "-1000"
+    }
+  ],
+  "fight": "0",
+  "fightRule": [],
+  "note": null,
+  "monsterList": [
+    "\u4e5e\u4e10",
+    "武者"
+  ],
+  "monsterRule": [
+    {
+      "odds": 30,
+      "touch": "\u4e5e\u4e10"
+    },
+    {
+      "odds": 30,
+      "touch": "\u6df7\u6df7"
+    },
+    {
+      "odds": 30,
+      "touch": "\u5e02\u4e95\u65e0\u8d56"
+    }
+  ],
+  "name": "\u6ca7\u6d77",
+  "season": null,
+  "place": []
+}

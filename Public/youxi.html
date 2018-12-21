@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #list {
+            background-color: #d4d4d4;
+            position: absolute;
+            width: 50%;
+            right: 0;
+            top: 0;
+            height: 600px;
+            overflow-y: scroll;
+        }
+
+        #showMsgP {
+            position: absolute;
+            left: 50%;
+            top: 36%;
+            width: 400px;
+            height: 200px;
+            margin-left: -200px;
+            margin-top: -100px;
+            display: none;
+            background-color: darkgrey;
+            padding: 25px;
+        }
+        #showMsgP span{
+            margin-top: 15px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<p>
+    服务器地址(ws://localhost:9501) <input onchange="webSc.setHost(this.value)" value="ws://localhost:9501">
+</p>
+<p>
+
+    <select id="msg">
+        <option value="1">乞丐</option>
+        <option value="2">武者</option>
+    </select>
+    <button onclick="webSc.send(msg.value);">攻击</button>
+</p>
+<p>
+    <button onclick="webSc.init(listen);$('#showMsgP').show()">重新开始你的人生</button>
+    <!--<button onclick="webSc.reStart()">重新连接</button>-->
+    <!--<button onclick="webSc.close()">关闭连接</button>-->
+</p>
+<p id="userinfo"></p>
+<p id="mInfo"></p>
+
+<p id="list" style="    background-color: #d4d4d4;">
+
+</p>
+<p id="showMsgP">
+<span>
+    出生地：
+    <select id="b">
+        <option value="0">无名地</option>
+        <option value="1">沧海</option>
+    </select><br/>
+</span>
+<span>
+    道友姓名：<input id="name"/>
+</span><br/>
+    <button onclick="selectB()">确定</button>
+</p>
+</body>
+<script src="/res/js/jquery.min.js"></script>
+<script>
+    var click = true;
+    $(document).ready(function () {
+         webSc.ws.send(JSON.stringify({
+             "action":''
+         }));
+    });
+    function selectB() {
+        $("#showMsgP").hide();
+        let name =$('#name').val()||'无名氏';
+        webSc.ws.send('{"action":"birthplace","b":'+$('#b').val()+',"name":"'+name+'"}');
+    }
+
+    function listen(data) {
+        let json = JSON.parse(data);
+
+
+        gongji(data);
+    }
+
+    function userInfo(json) {
+        document.getElementById('userinfo').innerHTML = '';
+        var i = 0;
+        for (let index in json) {
+            i++;
+            if ((typeof json[index] == 'object')) {
+                document.getElementById('userinfo').innerHTML += index + ':';
+                for (let index1 in json[index]) {
+                    if ((typeof json[index][index1] == 'object')) {
+                        document.getElementById('userinfo').innerHTML += '<span> &nbsp; &nbsp;</span>' + json[index][index1]['name'] + '<span> &nbsp; &nbsp;</span>';
+                    } else {
+                        if (!json[index][index1] == '') {
+                            document.getElementById('userinfo').innerHTML += '<span> &nbsp; &nbsp;</span>' + json[index][index1] + ' <span> &nbsp; &nbsp;</span>';
+                        }
+                    }
+                }
+            } else {
+                document.getElementById('userinfo').innerHTML += index + ':<span> &nbsp; &nbsp;</span>' + json[index] + "<span> &nbsp; &nbsp;</span> ";
+            }
+            if (i % 2 == 0) {
+                document.getElementById('userinfo').innerHTML += '<br/>';
+            }
+        }
+        return true;
+
+    }
+
+    function minfo(json) {
+        let div = 'mInfo';
+        document.getElementById(div).innerHTML = '';
+        var i = 0;
+        for (let index in json) {
+            i++;
+            if (index == 'dropRule') continue;
+            if ((typeof json[index] == 'object')) {
+                document.getElementById(div).innerHTML += index + ':';
+                for (let index1 in json[index]) {
+                    document.getElementById(div).innerHTML += ' &nbsp;' + json[index][index1]['name'];
+                }
+            } else {
+                document.getElementById(div).innerHTML += index + ':' + json[index] + "    ";
+            }
+            if (i % 2 == 0) {
+                document.getElementById(div).innerHTML += '<br/>';
+            }
+        }
+    }
+
+    function gongji(data) {
+        if (!click) return false;
+        if (data == '[]') return false;
+        click = false;
+        let json = JSON.parse(data);
+        // console.log(data);
+        minfo(json['m']);
+        document.getElementById('list').innerHTML = '' + '<br/>'
+        for (let index in json['rs']) {
+            if (index != 'res') {
+                setTimeout(function () {
+                    document.getElementById('list').innerHTML += json['rs'][index] + '<br/>'
+                    document.getElementById('list').scrollTop = document.getElementById('list').scrollHeight;
+                }, 1000 * index);
+            }
+        }
+        ;
+
+        function getJsonLength(jsonData) {
+            var length = 0;
+            for (var ever in jsonData) {
+                length++;
+            }
+            return length;
+        }
+
+        setTimeout(function () {
+            click = true;
+            if (json['res'] == 'user1') {
+                document.getElementById('list').innerHTML += '您获得胜利' + '<br/>'
+                webSc.ws.send('{"action":"userInfo"}');
+            } else {
+                var obj = document.getElementById('msg'); //定位id
+
+                var index = obj.selectedIndex; // 选中索引
+
+                var text = obj.options[index].text; // 选中文本
+                document.getElementById('list').innerHTML += text + '都打不过～重新开始人生吧' + '<br/>'
+            }
+        }, 1000 * (getJsonLength(json['rs']) - 1));
+    }
+
+    var webSc = {
+        host: "ws://localhost:9501",
+        interval: '5000',
+        initPower: 0,
+        ws: null,
+        closePower: 1,
+        HB: null,
+        runServer: null,
+        setHost: function (host) {
+            this.host = host;
+        },
+        setIntervalTime: function (interval) {
+            this.interval = interval * 1000;
+        },
+        init: function (runCallback) {
+            let self = this;
+            self.ws = new WebSocket(self.host);
+            self.ws.onopen = function (evt) {
+                self.ws.send('{"action":"userInfo"}');
+                self.HB = setInterval(function () {
+                    if (self.closePower == 1) {
+                        self.ws.send('{"action":"heartbeat"}');
+                    } else {
+                        clearInterval(self.Hb);
+                    }
+                }, self.interval);
+                self.initPower = 1;
+            };
+            self.ws.onmessage = function (evt) {
+                // console.log("Received Message: " + evt.data);
+                if (typeof runCallback == "function") {
+                    self.runServer = runCallback;
+                    runCallback(evt.data);
+                }
+            };
+            self.ws.onclose = function (evt) {
+                // console.log(self);
+                alert('连接已断开-数据清空');
+                location.reload();
+                // if(self.closePower == 1){
+                //     self.init(runCallback);
+                // }
+                // self.initPower = 0;
+            };
+        },
+        close: function () {
+            let self = this;
+            if (self.ws) {
+                self.initPower = 0;
+                self.closePower = 0;
+                self.ws.close();
+                clearInterval(self.HB);
+            }
+        },
+        reStart: function () {
+            let self = this;
+            self.close();
+            setTimeout(function () {
+                self.closePower = 1;
+                self.initPower = 1;
+                self.init(self.runServer);
+            }, 500);
+            return true;
+        },
+        send: function (data) {
+            let self = this;
+            if (self.initPower == 1) {
+                self.ws.send('{"action":"do_run","m":"' + data + '"}');
+            } else {
+                alert("please run init function");
+            }
+        }
+    }
+</script>
+</html>

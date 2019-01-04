@@ -258,26 +258,26 @@ class Core
             $dps2 = $this->attackOne(${$twoUser});
 
             //金币结算
-            if($dps1['other']&&$dps1['other']['bank']>0){
+            if(!empty($dps1['other']['bank'])&&$dps1['other']['bank']>0){
                 ${$firstUser}->setBank(${$firstUser}->getBank()+ ${$twoUser}->getBank()*$dps1['other']['bank']);
                 $log[] = ${$firstUser}->getName().'使用了：'
                     .$dps1['skillName'].'偷取了'.${$twoUser}->getBank()*$dps1['other']['bank'];
 
             }
-            if($dps2['other']&&$dps2['other']['bank']>0){
+            if(!empty($dps2['other']['bank'])&&$dps2['other']['bank']>0){
                 ${$twoUser}->setBank(${$twoUser}->getBank()+ ${$firstUser}->getBank()*$dps2['other']['bank']);
                 $log[] = ${$twoUser}->getName().'使用了：'
                     .$dps2['skillName'].'偷取了'. ${$firstUser}->getBank()*$dps2['other']['bank'];
             }
 
 
-            if($dps1['self']&&$dps1['self']['bank']>0){
+            if(!empty($dps1['self']['bank'])&&$dps1['self']['bank']>0){
                 ${$firstUser}->setBank(${$firstUser}->getBank()+ ${$firstUser}->getBank()*$dps1['self']['bank']);
                 $log[] = ${$firstUser}->getName().'使用了：'
                     .$dps1['skillName'].'花费了：'.${$firstUser}->getBank()*$dps1['self']['bank'];
 
             }
-            if($dps2['self']&&$dps2['self']['bank']>0){
+            if(!empty($dps2['self']['bank'])&&$dps2['self']['bank']>0){
                 ${$twoUser}->setBank(${$twoUser}->getBank()+ ${$twoUser}->getBank()*$dps2['self']['bank']);
                 $log[] = ${$twoUser}->getName().'使用了：'
                     .$dps2['skillName'].'花费了：'. ${$twoUser}->getBank()*$dps2['self']['bank'];
@@ -288,7 +288,7 @@ class Core
 
             //治疗或伤害结算
             $u1zz=0;
-            if($dps1['self']['lifeValue']>0){
+            if(!empty($dps1['self']['lifeValue'])&&$dps1['self']['lifeValue']>0){
                 $u1zz=1;
                 $log[] = ${$firstUser}->getName().'使用了：'
                     .$dps1['skillName'].'恢复了'.$dps1['self']['lifeValue'].'点气血'
@@ -296,7 +296,7 @@ class Core
                 ${$firstUserL}+=$dps1['self']['lifeValue'];
             }
             $u2zz=0;
-            if($dps2['self']['lifeValue']>0){
+            if(!empty($dps2['self']['lifeValue'])&&$dps2['self']['lifeValue']>0){
                 $u2zz=1;
                 $log[] = ${$twoUser}->getName().'使用了：'
                     .$dps2['skillName'].'恢复了'.$dps2['self']['lifeValue'].'点气血' ."-发挥".($dps2['develop']*10).'成水平';
@@ -325,7 +325,7 @@ class Core
             }
 
             if($one['user2']!=0){
-                $log[] = ${$twoUser}->getName().'使用了：'.$dps2['skillName'].'造成'.$one['user2'].'点伤害' ."-发挥".($dps1['develop']*10).'成水平';;
+                $log[] = ${$twoUser}->getName().'使用了：'.$dps2['skillName'].'造成'.$one['user2'].'点伤害' ."-发挥".(($dps1['develop']??0)*10).'成水平';;
             }else if($u2zz!=1){
                 $log[] = ${$twoUser}->getName().
                     '使用了：'.$dps2['skillName'].'造成打了一个寂寞';
@@ -334,7 +334,7 @@ class Core
             ${$firstUserL}-=$one['user2'];
             if(${$firstUserL}-$one['user2']<=0){
                 $res = $twoUser;
-                $log[] = ${$firstUserL}->getName().'倒地身亡';
+                $log[] = ${$firstUser}->getName().'倒地身亡';
                 break;
             }
         }
@@ -446,13 +446,17 @@ class Core
     {
 
         if(empty($user1['bad'])){
+            if(!empty($user1['other']))
             foreach($user1['other'] as $k=>$v){
-                $user2['self'][$k]*=(1-$v);
+                if(isset($user2['self'][$k]))
+                  $user2['self'][$k]*=(1-$v);
             }
         }
         if(empty($user2['bad'])){
+            if(!empty($user2['other']))
             foreach($user2['other'] as $k=>$v){
-                $user1['self'][$k]*=(1-$v);
+                if(isset($user1['self'][$k]))
+                    $user1['self'][$k]*=(1-$v);
             }
         }
 
@@ -460,15 +464,15 @@ class Core
         $rs = [];
         $rs['user1'] = 0;
         if(empty($user1['bad'])){
-            if ($this->isHit($user1['self']['hit'], $user2['self']['dodge'])) {
-                $rs['user1'] = $this->injuryResult($user1['self']['dps'], $user2['self']['armor']);
+            if ($this->isHit($user1['self']['hit']??0, $user2['self']['dodge']??0)) {
+                $rs['user1'] = $this->injuryResult($user1['self']['dps']??0, $user2['self']['armor']??0);
             }
         }
 
         $rs['user2'] = 0;
         if(empty($user2['bad'])) {
-            if ($this->isHit($user2['self']['hit'], $user1['self']['dodge'])) {
-                $rs['user2'] = $this->injuryResult($user2['self']['dps'], $user1['self']['armor']);
+            if ($this->isHit($user2['self']['hit']??0, $user1['self']['dodge']??0)) {
+                $rs['user2'] = $this->injuryResult($user2['self']['dps']??0, $user1['self']['armor']??0);
             }
         }
 
@@ -516,4 +520,23 @@ class Core
         }
     }
 
+    /**
+     * 战斗力计算
+     * getCombat
+     * @param BasicAttribute $playInfo
+     * @return float|int
+     * @author yangzhenyu
+     * Time: 13:59
+     */
+    function getCombat(BasicAttribute $playInfo){
+        $number = 0;
+        $playInfo = $this->getAttribute($playInfo);
+        $number+=$playInfo->getLifeValue()*0.05;
+        $number+=$playInfo->getArmor()*0.3;
+        $number+= $playInfo->getDodge()*0.1;
+        $number+= $playInfo->getDps()*0.5;
+        $number+= $playInfo->getFirst()*0.3;
+        $number+= $playInfo->getHit()*0.2;
+        return $number;
+    }
 }
